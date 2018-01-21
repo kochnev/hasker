@@ -20,7 +20,6 @@ prod:
 	yum -y install python36u-devel
 	yum -y install gcc
 	pip3.6 install uwsgi
-	cd hasker && uwsgi --socket 0.0.0:8080 --protocol=http -w hasker.wsgi
-
+	uwsgi --ini /hasker/uwsgi/uwsgi.ini
 
 
