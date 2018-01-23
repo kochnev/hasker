@@ -7,11 +7,11 @@ It is a simple Q&A web application written on Django 1.11.
 
 * CentOS 7
 * Python 3.6
-* Nginx 1.13
-* uWSGI 2.0
+* Nginx 
+* uWSGI 
 * Django 1.11
 * django-debug-toolbar 1.9.1
-* PostgreSQL 9.6
+* PostgreSQL 
 * Twitter Bootstrap
 * Javascript, jQuery
 
