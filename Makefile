@@ -24,7 +24,7 @@ prod:
 	sudo -u postgres psql -f postgresql/init.sql
 
         #init django project
-	python3.6 manage.py collectstatic
+	python3.6 manage.py collectstatic --noinput
 	python3.6 manage.py migrate
 
 	#nginx

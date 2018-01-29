@@ -4,7 +4,7 @@
 {% block content %}
     {% if messages %}
         {% for message in messages %}
-        <p class="bg-danger">{{ message }}</p>
+        <p class="alert alert-danger">{{ message }}</p>
         {% endfor %}
     {% endif %}
     <form action="." method="post">
