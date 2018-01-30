@@ -4,6 +4,9 @@ prod:
 	yum -y install https://centos7.iuscommunity.org/ius-release.rpm
 	yum -y install sudo
 
+	#set env
+	export 'LANG=en_US.UTF-8'
+
 	#python3.6 and pip3.6
 	yum -y install python36u
 	yum -y install python36u-pip
@@ -14,7 +17,8 @@ prod:
         
 	#psycopg2
 	pip3.6 install psycopg2
-	
+	pip3.6 install Pillow
+
 	#postgresql
 	yum install -y postgresql-server postgresql-contrib
 	sudo -u postgres /usr/bin/initdb /var/lib/pgsql/data/

@@ -2,11 +2,9 @@
 {% load render_form %}
 
 {% block content %}
-    {% if messages %}
-        {% for message in messages %}
-        <p class="alert alert-danger">{{ message }}</p>
-        {% endfor %}
-    {% endif %}
+    {% for message in messages %}
+    <p class="alert alert-danger">{{ message }}</p>
+    {% endfor %}
     <form action="." method="post">
         {% csrf_token %}
         <div class="form-group row">

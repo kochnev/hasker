@@ -1,21 +1,35 @@
 {% extends "base.html" %}
 {% load render_form %}
 {% block content %}
-<form action="." method="post">
+<form action="." method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ user_form.non_field_errors }}
     {% for field in user_form %}
-    {% for error in field.errors %}
-    <p style="color: red">{{ error }}</p>
-    {% endfor %}
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label" for="{{ field.id_for_label }}">{{field.name|title}}:</label>
-        <div class="col-sm-10">
-            <input class="form-control" id="{{ field.id_for_label }}"
-                   name="{{ field.html_name }}"
-                   value="{{ field.value|default_if_none:'' }}" type="{{field|fieldtype}}" />
+        {% for error in field.errors %}
+            <p style="color: red">{{ error }}</p>
+        {% endfor %}
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="{{ field.id_for_label }}">{{field.label}}</label>
+            <div class="col-sm-10">
+                <input class="form-control" id="{{ field.id_for_label }}"
+                       name="{{ field.html_name }}"
+                       value="{{ field.value|default_if_none:'' }}" type="{{field|fieldtype}}" />
+            </div>
         </div>
-    </div>
+    {% endfor %}
+    {{ profile_form.non_field_errors }}
+    {% for field in profile_form %}
+        {% for error in field.errors %}
+            <p style="color: red">{{ error }}</p>
+        {% endfor %}
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="{{ field.id_for_label }}">{{field.label}}</label>
+            <div class="col-sm-10">
+                <input class="form-control" id="{{field.id_for_label}}"
+                       name="{{ field.html_name }}"
+                       value="{{ field.value|default_if_none:'' }}" type="{{field|fieldtype}}" />
+            </div>
+        </div>
     {% endfor %}
     <div class="form-group row">
         <div class="col-sm-10">

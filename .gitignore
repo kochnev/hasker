@@ -103,19 +103,8 @@ ENV/
 #swp
 *.swp
 
-#HW1
-#log
-hw1/log/
-#report
-hw1/reports/
-#ts
-hw1/ts/
-#exectutino log
-hw1/ExecutionLog
-
-#HW5
-#site/
-hw5/site
-
 #IDE
 .idea
+
+#media
+/hasker/media

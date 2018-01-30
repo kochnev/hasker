@@ -15,15 +15,20 @@
 <body>
 <header>
 <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-       <a class="my-0 mr-md-auto navbar-brand" href="{% url 'index' %}">Hasker</a>
-
+       <h1 class="my-0 mr-md-auto"><a class="text-dark" href="{% url 'index' %}">Hasker</a></h1>
        <form class="form-inline">
          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
        </form>
-       <nav class="my-2 my-md-0 mr-md-3">
+       <nav class="my-2 ml-2 my-md-0 mr-md-3 d-inline-block" width="72" height="72">
            {% if user.is_authenticated %}
-                <a class="p-2 text-dark" href="#">{{user.username}}</a>
-                <a class="p-2 text-dark" href="{% url 'logout'%}">Log out</a>
+                <img src="{{ MEDIA_URL }}{{user.profile.avatar}}" alt="avatar" width="72" height="72" alt="{{user.username}}">
+                <div class="d-inline-block">
+                    <p><a class="p-2" href="{% url 'settings' %}">{{user.username}}</a></p>
+                    <p><a class="p-2 text-dark" href="{% url 'logout'%}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 8 8">
+                        <path d="M3 0v1h4v5h-4v1h5v-7h-5zm-1 2l-2 1.5 2 1.5v-1h4v-1h-4v-1z" />
+                        </svg></a></p>
+                </div>
            {% else %}
                 <a class="p-2 text-dark" href="{% url 'login'%}">Log in</a>
                 <a class="btn btn-outline-primary" href="{% url 'signup'%}">Sign up</a>
