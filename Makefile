@@ -4,9 +4,6 @@ prod:
 	yum -y install https://centos7.iuscommunity.org/ius-release.rpm
 	yum -y install sudo
 
-	#set env
-	export 'LANG=en_US.UTF-8'
-
 	#python3.6 and pip3.6
 	yum -y install python36u
 	yum -y install python36u-pip
@@ -25,7 +22,7 @@ prod:
 	sudo -u postgres /usr/bin/pg_ctl start  -D /var/lib/pgsql/data -s -o "-p 5432" -w -t 300
 	
 	#create user and database
-	sudo -u postgres psql -f postgresql/init.sql
+	sudo -u postgres psql -f postgresql/init.sql -v db_user=${DB_USER} -v db_name=${DB_NAME} -v db_password=${DB_PASSWORD}
 
         #init django project
 	python3.6 manage.py collectstatic --noinput
