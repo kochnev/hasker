@@ -16,14 +16,15 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from hasker.ask import views as ask_views
+from hasker.qa import views as qa_views
 from hasker.account import views as acc_views
 
 urlpatterns = [
-    url(r'^$', ask_views.index, name='index'),
+    url(r'^$', qa_views.index, name='index'),
     url(r'^signup/', acc_views.signup, name='signup'),
     url(r'^login/', acc_views.user_login, name='login'),
     url(r'^logout/', auth_views.logout, {'next_page': '/'}, name='logout'),
     url(r'^settings/$', acc_views.settings, name='settings'),
+    url(r'^ask/$', qa_views.add_question, name='add_question'),
     url(r'^admin/', admin.site.urls),
 ]
