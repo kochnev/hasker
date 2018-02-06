@@ -3,10 +3,14 @@ from django.core.urlresolvers import reverse
 from .models import User
 
 
-class SignUpTests(TestCase):
+class AccountTests(TestCase):
     def setUp(self):
-        self.credentials = {'username': 'test', 'password1': 'test123456789',
+        self.credentials = {'username': 'test1', 'password1': 'test123456789',
                             'password2': 'test123456789', 'email': 'test@mail.ru'}
+
+        user = User.objects.create_user(username='test', email='test@mail.ru',
+                                        password='test123456789')
+        user.save()
 
     def test_view_renders(self):
         response = self.client.get(reverse('signup'))
@@ -23,4 +27,15 @@ class SignUpTests(TestCase):
         params.pop('password1')
         response = self.client.post(reverse('signup'), params)
         self.assertFormError(response, 'user_form', 'password1', 'This field is required.')
+
+    def test_login(self):
+        login = self.client.login(username='test', password='test123456789')
+        resp = self.client.get(reverse('index'))
+        # Проверка, что пользователь залогинился
+        self.assertEqual(str(resp.context['user']), 'test')
+
+    def test_redirect_settings_if_not_logged_in(self):
+        resp = self.client.get(reverse('settings'))
+        self.assertRedirects(resp, '/login/?next=/settings/')
+
 
