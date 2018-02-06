@@ -33,6 +33,7 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'hasker'))
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'account.User'
 
 # Application definition
 

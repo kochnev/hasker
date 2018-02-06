@@ -26,6 +26,7 @@ prod:
 
         #init django project
 	python3.6 manage.py collectstatic --noinput
+	python3.6 manage.py makemigrations
 	python3.6 manage.py migrate
 
 	#nginx

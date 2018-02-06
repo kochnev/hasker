@@ -1,19 +1,19 @@
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
-from .models import UserProfile
 
 
 class UserForm(UserCreationForm):
     email = forms.EmailField(max_length=254, label='Email', help_text='Required. Inform a valid email address.')
 
     class Meta:
-        model = User
-        fields = ('username', 'email', 'password1', 'password2', )
+        model = get_user_model()
+        fields = ('username', 'email', 'password1', 'password2', 'avatar' )
         labels = {
             'username': 'Login',
             'email': 'Email',
             'password1': 'Password',
+            'avatar': 'Avatar'
         }
 
     def __init__(self, *args, **kwargs):
@@ -23,17 +23,9 @@ class UserForm(UserCreationForm):
 
 class UserSettingsForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ('email',)
+        model = get_user_model()
+        fields = ('email', 'avatar')
         labels = {
             'email': 'Email',
-        }
-
-
-class UserProfileForm(forms.ModelForm):
-    class Meta:
-        model = UserProfile
-        fields = ('avatar',)
-        labels = {
             'avatar': 'Avatar',
         }
