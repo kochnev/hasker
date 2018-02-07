@@ -16,7 +16,7 @@ class Question(models.Model):
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(get_user_model(), null=True, on_delete=models.SET_NULL)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def __str__(self):
         return self.title

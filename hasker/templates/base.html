@@ -11,6 +11,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    {% block css_top %}{% endblock css_top%}
+    {% block script_top %}{% endblock script_top %}
 </head>
 <body>
 <header>
@@ -50,5 +52,6 @@
     </div>
 </main>
 <script src="{% static 'bootstrap/js/bootstrap.min.js'%}"></script>
+{% block script_bottom %}{% endblock script_bottom%}
 </body>
 </html>

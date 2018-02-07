@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 
 
-
 class AccountTests(TestCase):
     @classmethod
     def setUpTestData(cls):
