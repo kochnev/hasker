@@ -30,6 +30,9 @@ class Question(models.Model):
             num += 1
         return unique_slug
 
+    def get_tags_str(self):
+        return ','.join([t.title for t in self.tags.all()])
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = self._get_unique_slug()

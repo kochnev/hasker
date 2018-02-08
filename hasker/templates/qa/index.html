@@ -1,7 +1,44 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>CONTENT</h1>
+<h2>New questions</h2>
+<table class="table">
+  <tbody>
+    {% for question in questions %}
+    <tr>
+      <td><div>42</div><div>Votes</div></td>
+      <td><div>2</div><div>Answer</div></td>
+      <td>
+          <div><a href="{% url 'question_detail' question.slug%}">{{question.title}}</a></div>
+          <div>
+           {% for tag in question.tags.all %}
+           <span class="mx-2 p-1 border">{{tag.title}}</span>
+           {% endfor%}
+          </div>
+      </td>
+      <td>
+          <div>{{question.author.username}}</div>
+          <div style="font-size:10px">asked {{question.created_at|timesince}} min ago</div>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<div class="pagination">
+    <span class="step-links">
+        {% if questions.has_previous %}
+            <a href="?page={{ questions.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ questions.number }} of {{ questions.paginator.num_pages }}.
+        </span>
+
+        {% if questions.has_next %}
+            <a href="?page={{ questions.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
 {% endblock %}
 
 {% block aside%}

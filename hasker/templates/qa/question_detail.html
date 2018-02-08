@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{question.title}}</h2>
+<table class="table">
+  <tbody>
+    <tr>
+      <td>42</td>
+      <td>
+          <div class="mb-2">{{question.text}}</div>
+          <div>
+           {% for tag in question.tags.all %}
+           <span class="mx-2 p-1 border">{{tag.title}}</span>
+           {% endfor%}
+           <span> <img src="{{ MEDIA_URL }}{{question.author.avatar}}" alt="avatar" width="30" height="30" alt="{{question.author.username}}">
+                {{question.author.username}}</span>
+          </div>
+      </td>
+    </tr>
+    {% for answer in answers %}
+    <tr>
+      <td>42</td>
+      <td>
+          <div class="mb-2">{{answer.text}}</div>
+          <div>
+           <span> <img src="{{ MEDIA_URL }}{{answer.author.avatar}}" alt="avatar" width="30" height="30" alt="{{answer.author.username}}">
+                {{question.author.username}}</span>
+          </div>
+          {% if answer.is_correct %}
+             <div><strong>Ответ верный</strong></div>
+          {% else %}
+              <div class="mt-2"><a href="{% url 'mark_answer' question.slug answer.id%}">Отметить ответ как правильный</a></div>
+          {% endif%}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% if user.is_authenticated%}
+<form id="answer_form" action="." method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for error in form.title.errors %}
+        <p style="color: red">{{ error }}</p>
+    {% endfor %}
+    <div class="form-group">
+        <label class="col-sm-2 col-form-label" for="{{ form.text.id_for_label }}">Your answer</label>
+        <div class="col-sm-10">
+            <textarea class="form-control" id="{{ form.text.id_for_label }}"
+                   name="{{ form.text.html_name }}"
+                   value="{{ form.text.value|default_if_none:'' }}" >
+            </textarea>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-10">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</form>
+{% endif %}
+{% endblock %}
+
+{% block aside%}
+ {% if user.is_authenticated %}
+ <a class="btn btn-outline-primary" href="{% url 'add_question'%}">Ask!</a>
+ {%endif%}
+{% endblock %}

@@ -11,8 +11,6 @@ class QATests(TestCase):
                                         password='test123456789')
         user.save()
 
-    def test_add_question_form(self):
-        login = self.client.login(username='test', password='test123456789')
-        q = QuestionForm(data={'title':'titletext','text':'texttexttext', 'tags':'tag1,tag2,tag3'})
-        print(q)
-        self.assertTrue(q.is_valid())
+
+
+

@@ -26,5 +26,7 @@ urlpatterns = [
     url(r'^logout/', auth_views.logout, {'next_page': '/'}, name='logout'),
     url(r'^settings/$', acc_views.settings, name='settings'),
     url(r'^ask/$', qa_views.add_question, name='add_question'),
+    url(r'^question/(?P<slug>[\w\-]+)/$', qa_views.question_detail, name='question_detail'),
+    url(r'^mark-answer/(?P<slug>[\w\-]+)/(?P<pk>\d+)/$', qa_views.mark_answer, name='mark_answer'),
     url(r'^admin/', admin.site.urls),
 ]
