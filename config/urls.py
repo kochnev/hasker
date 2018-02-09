@@ -28,5 +28,6 @@ urlpatterns = [
     url(r'^ask/$', qa_views.add_question, name='add_question'),
     url(r'^question/(?P<slug>[\w\-]+)/$', qa_views.question_detail, name='question_detail'),
     url(r'^mark-answer/(?P<slug>[\w\-]+)/(?P<pk>\d+)/$', qa_views.mark_answer, name='mark_answer'),
+    url(r'^vote-question/(?P<slug>[\w\-]+)/(?P<type_vote>[\w\-]+)/$', qa_views.vote_question, name='vote_question'),
     url(r'^admin/', admin.site.urls),
 ]

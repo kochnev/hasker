@@ -5,7 +5,11 @@
 <table class="table">
   <tbody>
     <tr>
-      <td>42</td>
+        <td>
+            <a class="mx-2" href="{% url 'vote_question' question.slug 'up' %}">+</a>
+            <span>{{question.rating}}</span>
+            <a class="mx-2"  href="{% url 'vote_question' question.slug 'down' %}">-</a></td>
+
       <td>
           <div class="mb-2">{{question.text}}</div>
           <div>
@@ -17,6 +21,7 @@
           </div>
       </td>
     </tr>
+
     {% for answer in answers %}
     <tr>
       <td>42</td>
@@ -26,11 +31,12 @@
            <span> <img src="{{ MEDIA_URL }}{{answer.author.avatar}}" alt="avatar" width="30" height="30" alt="{{answer.author.username}}">
                 {{question.author.username}}</span>
           </div>
-          {% if answer.is_correct %}
-             <div><strong>Ответ верный</strong></div>
-          {% else %}
-              <div class="mt-2"><a href="{% url 'mark_answer' question.slug answer.id%}">Отметить ответ как правильный</a></div>
-          {% endif%}
+              {% if answer.is_correct %}
+                 <div><strong>Ответ верный</strong></div>
+              {% elif not question.has_answer %}
+                  <div class="mt-2"><a href="{% url 'mark_answer' question.slug answer.id%}">Отметить ответ как правильный</a></div>
+              {% endif%}
+
       </td>
     </tr>
     {% endfor %}

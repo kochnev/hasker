@@ -66,8 +66,29 @@ def question_detail(request, slug):
 
 @login_required
 def mark_answer(request, slug, pk):
+    q = get_object_or_404(Question, slug=slug)
+    Answer.objects.filter(question=q).update(is_correct=None)
     a = get_object_or_404(Answer, pk=pk)
     a.is_correct = True
     a.save()
+    q.has_answer = True
+    q.save()
     return redirect('question_detail', slug)
+
+
+@login_required
+def vote_question(request, slug, type_vote):
+    q = get_object_or_404(Question, slug=slug)
+    user = request.user
+    if type_vote == 'up':
+        q.upvote(user)
+    elif type_vote == 'down':
+        q.downvote(user)
+    elif type_vote == 'cancel':
+        q.cancel_vote(user)
+    return redirect('question_detail', slug)
+
+
+
+
 

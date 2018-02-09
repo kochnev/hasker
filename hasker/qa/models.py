@@ -17,9 +17,17 @@ class Question(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(get_user_model(), null=True, on_delete=models.SET_NULL)
     tags = models.ManyToManyField(Tag, blank=True)
+    has_answer =  models.BooleanField(default=False)
+    rating = models.IntegerField(default=0)
+    voters = models.ManyToManyField(get_user_model(), related_name='vote_questions', through='QuestionVote')
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = self._get_unique_slug()
+        super().save()
 
     def _get_unique_slug(self):
         slug = slugify(self.title)
@@ -33,10 +41,35 @@ class Question(models.Model):
     def get_tags_str(self):
         return ','.join([t.title for t in self.tags.all()])
 
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = self._get_unique_slug()
-        super().save()
+    def cancel_vote(self, user):
+        qv_up = QuestionVote.objects.filter(user=user, question=self, vote_type='up')
+        qv_down = QuestionVote.objects.filter(user=user, question=self, vote_type='down')
+        cancel = False
+        if qv_up.exists():
+            # cancel vote up
+            qv_up.delete()
+            self.rating -= 1
+            cancel = True
+        elif qv_down.exists():
+            # cancel vote_down
+            qv_down.delete()
+            self.rating += 1
+            cancel = True
+        return cancel
+
+    def upvote(self, user):
+        if not self.cancel_vote(user):
+            self.question_votes.create(user=user, question=self, vote_type='up')
+            self.rating += 1
+        self.save()
+
+    def downvote(self, user):
+        if not self.cancel_vote(user):
+            self.question_votes.create(user=user, question=self, vote_type='down')
+            self.rating -= 1
+
+        self.save()
+
 
 
 class Answer(models.Model):
@@ -45,6 +78,15 @@ class Answer(models.Model):
     question = models.ForeignKey(Question)
     author = models.ForeignKey(get_user_model(), null=True, on_delete=models.SET_NULL)
     is_correct = models.NullBooleanField()
+
+
+class QuestionVote(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='question_votes')
+    vote_type = models.CharField(max_length=4)
+
+    class Meta:
+        unique_together = ('user', 'question', 'vote_type')
 
 
 
