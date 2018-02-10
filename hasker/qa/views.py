@@ -6,7 +6,8 @@ from .models import Answer, Question, Tag
 
 
 def index(request):
-    question_list = Question.objects.all()
+    sort = request.GET.get('sort','id')
+    question_list = Question.objects.all().order_by('-' + sort)
     paginator = Paginator(question_list, 20)
 
     page = request.GET.get('page')

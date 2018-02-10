@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>New questions</h2>
+<h2><a href="{% url 'index'%}?sort=id">New questions</a>|<a href="{% url 'index'%}?sort=rating">Hot questions</a></h2>
 <table class="table">
   <tbody>
     {% for question in questions %}
