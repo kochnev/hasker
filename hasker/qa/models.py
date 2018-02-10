@@ -71,13 +71,43 @@ class Question(models.Model):
         self.save()
 
 
-
 class Answer(models.Model):
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     question = models.ForeignKey(Question)
     author = models.ForeignKey(get_user_model(), null=True, on_delete=models.SET_NULL)
     is_correct = models.NullBooleanField()
+    rating = models.IntegerField(default=0)
+    voters = models.ManyToManyField(get_user_model(), related_name='vote_answers', through='AnswerVote')
+
+    def cancel_vote(self, user):
+        av_up = AnswerVote.objects.filter(user=user, answer=self, vote_type='up')
+        av_down = AnswerVote.objects.filter(user=user, answer=self, vote_type='down')
+        cancel = False
+        if av_up.exists():
+            # cancel vote up
+            av_up.delete()
+            self.rating -= 1
+            cancel = True
+        elif av_down.exists():
+            # cancel vote_down
+            av_down.delete()
+            self.rating += 1
+            cancel = True
+        return cancel
+
+    def upvote(self, user):
+        if not self.cancel_vote(user):
+            self.answer_votes.create(user=user, answer=self, vote_type='up')
+            self.rating += 1
+        self.save()
+
+    def downvote(self, user):
+        if not self.cancel_vote(user):
+            self.answer_votes.create(user=user, answer=self, vote_type='down')
+            self.rating -= 1
+
+        self.save()
 
 
 class QuestionVote(models.Model):
@@ -87,6 +117,16 @@ class QuestionVote(models.Model):
 
     class Meta:
         unique_together = ('user', 'question', 'vote_type')
+
+
+class AnswerVote(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='answer_votes')
+    vote_type = models.CharField(max_length=4)
+
+    class Meta:
+        unique_together = ('user', 'answer', 'vote_type')
+
 
 
 

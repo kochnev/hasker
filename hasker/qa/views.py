@@ -88,6 +88,19 @@ def vote_question(request, slug, type_vote):
         q.cancel_vote(user)
     return redirect('question_detail', slug)
 
+@login_required
+def vote_answer(request, slug, pk, type_vote):
+    a = get_object_or_404(Answer, pk=pk)
+    user = request.user
+    if type_vote == 'up':
+        a.upvote(user)
+    elif type_vote == 'down':
+        a.downvote(user)
+    elif type_vote == 'cancel':
+        a.cancel_vote(user)
+    return redirect('question_detail', slug)
+
+
 
 
 

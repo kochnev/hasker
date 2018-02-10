@@ -29,5 +29,6 @@ urlpatterns = [
     url(r'^question/(?P<slug>[\w\-]+)/$', qa_views.question_detail, name='question_detail'),
     url(r'^mark-answer/(?P<slug>[\w\-]+)/(?P<pk>\d+)/$', qa_views.mark_answer, name='mark_answer'),
     url(r'^vote-question/(?P<slug>[\w\-]+)/(?P<type_vote>[\w\-]+)/$', qa_views.vote_question, name='vote_question'),
+    url(r'^vote-answer/(?P<slug>[\w\-]+)/(?P<pk>\d+)/(?P<type_vote>[\w\-]+)/$', qa_views.vote_answer, name='vote_answer'),
     url(r'^admin/', admin.site.urls),
 ]

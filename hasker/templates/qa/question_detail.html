@@ -24,7 +24,11 @@
 
     {% for answer in answers %}
     <tr>
-      <td>42</td>
+      <td>
+          <a class="mx-2" href="{% url 'vote_answer' question.slug answer.id 'up' %}">+</a>
+            <span>{{answer.rating}}</span>
+          <a class="mx-2"  href="{% url 'vote_answer' question.slug answer.id 'down' %}">-</a></td>
+      </td>
       <td>
           <div class="mb-2">{{answer.text}}</div>
           <div>

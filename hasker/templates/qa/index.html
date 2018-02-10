@@ -6,8 +6,8 @@
   <tbody>
     {% for question in questions %}
     <tr>
-      <td><div>42</div><div>Votes</div></td>
-      <td><div>2</div><div>Answer</div></td>
+      <td><div>{{question.rating}}</div><div>Votes</div></td>
+      <td><div>{{question.answer_set.count}}</div><div>Answer</div></td>
       <td>
           <div><a href="{% url 'question_detail' question.slug%}">{{question.title}}</a></div>
           <div>
