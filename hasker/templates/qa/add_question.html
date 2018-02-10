@@ -23,6 +23,9 @@
                    value="{{ form.title.value|default_if_none:'' }}" type="{{form.title|fieldtype}}" />
         </div>
     </div>
+    {% for error in form.text.errors %}
+        <p style="color: red">{{ error }}</p>
+    {% endfor %}
     <div class="form-group row">
         <label class="col-sm-2 col-form-label" for="{{ form.text.id_for_label }}">{{form.text.label|title}}</label>
         <div class="col-sm-10">
@@ -35,7 +38,7 @@
     <div class="form-group row">
         <label class="col-sm-2 col-form-label" for="tags_id">Tags</label>
         <div class="col-sm-10">
-           <input name="tags" id="tags" value="" />
+           <input name="tags" id="tags" value="{{tags}}" />
         </div>
     </div>
     <div class="form-group row">

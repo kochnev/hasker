@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2><a href="{% url 'index'%}?sort=id">New questions</a>|<a href="{% url 'index'%}?sort=rating">Hot questions</a></h2>
+{% if request.GET.sort == "rating" %}
+<h3><a href="{% url 'index' %}">New questions</a>|<span>Hot questions</span></h3>
+{% else %}
+<h3><span>New questions</span>|<a href="{% url 'index'%}?sort=rating">Hot questions</a></h3>
+{% endif %}
+
 <table class="table">
   <tbody>
     {% for question in questions %}

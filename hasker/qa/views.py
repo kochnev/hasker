@@ -23,33 +23,42 @@ def index(request):
 
 @login_required()
 def add_question(request):
+    tags_str = ''
     if request.method == 'POST':
         form = QuestionForm(request.POST)
+        tags_str = request.POST.get('tags')
         if form.is_valid():
             q = form.save(commit=False)
             q.author = request.user
             q.save()
-            q.tags.clear()
-            tags_str = request.POST.get('tags')
             if tags_str:
                 tags_arr = tags_str.split(',')
-                for tag in tags_arr:
-                    (t,created) = Tag.objects.get_or_create(title=tag)
-                    t.save()
-                    q.tags.add(t)
-            q.save()
-
-            return redirect('answer', q.slug)
+                if len(tags_arr)<=3:
+                    for tag in tags_arr:
+                        (t,created) = Tag.objects.get_or_create(title=tag)
+                        t.save()
+                        q.tags.add(t)
+                    q.save()
+                    return redirect('question_detail', q.slug)
     else:
         form = QuestionForm()
 
-    return render(request, 'qa/add_question.html', {'form': form})
+    return render(request, 'qa/add_question.html', {'form': form, 'tags': tags_str})
 
 
 @login_required
 def question_detail(request, slug):
     q = get_object_or_404(Question, slug=slug)
-    answers = Answer.objects.filter(question=q)
+    answers_list = Answer.objects.filter(question=q).order_by('-rating','-created_at')
+    paginator = Paginator(answers_list, 30)
+    page = request.GET.get('page')
+    try:
+        answers = paginator.page(page)
+    except PageNotAnInteger:
+        answers = paginator.page(1)
+    except EmptyPage:
+        answers = paginator.page(paginator.num_pages)
+
     form = AnswerForm()
     if request.method == 'POST':
         form = AnswerForm(request.POST)
