@@ -35,6 +35,9 @@
             </textarea>
         </div>
     </div>
+     {% if tag_error %}
+        <p style="color: red">{{ tag_error }}</p>
+    {% endif %}
     <div class="form-group row">
         <label class="col-sm-2 col-form-label" for="tags_id">Tags</label>
         <div class="col-sm-10">
@@ -64,6 +67,7 @@
 </script>
 {% endblock %}
 
-{% block aside%}
- <h1>Trending</h1>
-{% endblock %}
+{% block aside %}
+                  
+{% endblock aside %}
+

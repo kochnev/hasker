@@ -24,6 +24,7 @@ def index(request):
 @login_required()
 def add_question(request):
     tags_str = ''
+    tag_error = ''
     if request.method == 'POST':
         form = QuestionForm(request.POST)
         tags_str = request.POST.get('tags')
@@ -33,17 +34,19 @@ def add_question(request):
             q.save()
             if tags_str:
                 tags_arr = tags_str.split(',')
-                if len(tags_arr)<=3:
+                if len(tags_arr) <= 3:
                     for tag in tags_arr:
                         (t,created) = Tag.objects.get_or_create(title=tag)
                         t.save()
                         q.tags.add(t)
                     q.save()
                     return redirect('question_detail', q.slug)
+                else:
+                    tag_error = 'You are allowed to input up to 3 tags'
     else:
         form = QuestionForm()
 
-    return render(request, 'qa/add_question.html', {'form': form, 'tags': tags_str})
+    return render(request, 'qa/add_question.html', {'form': form, 'tags': tags_str, 'tag_error': tag_error})
 
 
 @login_required

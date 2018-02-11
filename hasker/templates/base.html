@@ -45,7 +45,17 @@
               {% block content %} {% endblock content %}
             </div>
             <div class="col-4">
-               {% block aside %} {% endblock aside %}
+               {% block aside %}
+                  {% if user.is_authenticated %}
+                        <a class="btn btn-outline-primary" href="{% url 'add_question'%}">Ask!</a>
+                   {%endif%}
+                {% endblock aside %}
+                <h2>Trending</h2>
+                {% for hq in hot_questions %}
+                <div>
+                    <span class="mx-2 p-1 border">{{hq.rating}}</span><span>{{hq.title}}</span>
+                </div>
+                {% endfor %}
             </div>
         </div>
 
