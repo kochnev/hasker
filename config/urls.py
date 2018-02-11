@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from hasker.qa import views as qa_views
 from hasker.account import views as acc_views
+from hasker.search import views as search_views
 
 urlpatterns = [
     url(r'^$', qa_views.index, name='index'),
@@ -30,5 +31,7 @@ urlpatterns = [
     url(r'^mark-answer/(?P<slug>[\w\-]+)/(?P<pk>\d+)/$', qa_views.mark_answer, name='mark_answer'),
     url(r'^vote-question/(?P<slug>[\w\-]+)/(?P<type_vote>[\w\-]+)/$', qa_views.vote_question, name='vote_question'),
     url(r'^vote-answer/(?P<slug>[\w\-]+)/(?P<pk>\d+)/(?P<type_vote>[\w\-]+)/$', qa_views.vote_answer, name='vote_answer'),
+    url(r'^search/$', search_views.search, name='search'),
+    url(r'^tag/(?P<tag>[\w\-]+)$', search_views.tag_search, name='tag_search'),
     url(r'^admin/', admin.site.urls),
 ]

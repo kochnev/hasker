@@ -18,8 +18,8 @@
 <header>
 <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
        <h1 class="my-0 mr-md-auto"><a class="text-dark" href="{% url 'index' %}">Hasker</a></h1>
-       <form id="search-form" class="form-inline">
-         <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+       <form id="search-form" method="get" action="{% url 'search' %}" class="form-inline">
+         <input name="q" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value="{{q}}">
        </form>
        <nav class="my-2 ml-2 my-md-0 mr-md-3 d-inline-block" width="72" height="72">
            {% if user.is_authenticated %}
@@ -42,7 +42,9 @@
     <div class="container">
         <div class="row">
             <div class="col-8">
-              {% block content %} {% endblock content %}
+                {% block header %}
+                {% endblock header %}
+                {% block content %} {% endblock content %}
             </div>
             <div class="col-4">
                {% block aside %}

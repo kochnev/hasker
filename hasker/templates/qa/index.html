@@ -1,53 +1,9 @@
-{% extends "base.html" %}
+{% extends "content.html" %}
 
-{% block content %}
-{% if request.GET.sort == "rating" %}
-<h3><a href="{% url 'index' %}">New questions</a>|<span>Hot questions</span></h3>
-{% else %}
-<h3><span>New questions</span>|<a href="{% url 'index'%}?sort=rating">Hot questions</a></h3>
-{% endif %}
-
-<table class="table">
-  <tbody>
-    {% for question in questions %}
-    <tr>
-      <td><div>{{question.rating}}</div><div>Votes</div></td>
-      <td><div>{{question.answer_set.count}}</div><div>Answer</div></td>
-      <td>
-          <div><a href="{% url 'question_detail' question.slug%}">{{question.title}}</a></div>
-          <div>
-           {% for tag in question.tags.all %}
-           <span class="mx-2 p-1 border">{{tag.title}}</span>
-           {% endfor%}
-          </div>
-      </td>
-      <td>
-          <div>{{question.author.username}}</div>
-          <div style="font-size:10px">asked {{question.created_at|timesince}} min ago</div>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-<div class="pagination">
-    <span class="step-links">
-        {% if questions.has_previous %}
-            <a href="?page={{ questions.previous_page_number }}">previous</a>
-        {% endif %}
-
-        <span class="current">
-            Page {{ questions.number }} of {{ questions.paginator.num_pages }}.
-        </span>
-
-        {% if questions.has_next %}
-            <a href="?page={{ questions.next_page_number }}">next</a>
-        {% endif %}
-    </span>
-</div>
-{% endblock %}
-
-{% block aside%}
- {% if user.is_authenticated %}
- <a class="btn btn-outline-primary" href="{% url 'add_question'%}">Ask!</a>
- {%endif%}
-{% endblock %}
+{% block header %}
+    {% if request.GET.sort == "rating" %}
+    <h3><a href="{% url 'index' %}">New questions</a>|<span>Hot questions</span></h3>
+    {% else %}
+    <h3><span>New questions</span>|<a href="{% url 'index'%}?sort=rating">Hot questions</a></h3>
+    {% endif %}
+{% endblock header %}
