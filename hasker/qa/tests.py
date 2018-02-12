@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from .forms import QuestionForm
+from django.shortcuts import reverse
 
 
 class QATests(TestCase):
@@ -10,6 +10,11 @@ class QATests(TestCase):
                                         email='test@mail.ru',
                                         password='test123456789')
         user.save()
+
+    def test_pagination_question_list_is_twenty(self):
+        resp = self.client.get(reverse('index'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(len(resp.context['questions']) == 20)
 
 
 

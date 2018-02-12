@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .forms import QuestionForm, AnswerForm
 from .models import Answer, Question, Tag
@@ -70,6 +71,15 @@ def question_detail(request, slug):
             a.author = request.user
             a.question = q
             a.save()
+            send_mail(
+                'new answer was added',
+                'The answer is:\n' +
+                 a.text + '\n\n' +
+                'Here is the link for your question ' + request.build_absolute_uri(),
+                'from@example.com',
+                ['to@example.com'],
+                fail_silently=False,
+            )
             return redirect('question_detail', q.slug)
     else:
         form = AnswerForm()

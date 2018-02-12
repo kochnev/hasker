@@ -127,3 +127,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'hasker/static/')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'hasker/media/')
 MEDIA_URL = '/media/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = '/tmp/hasker_messages'
