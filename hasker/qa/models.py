@@ -1,6 +1,39 @@
-from django.db import models
+from django.db import models, transaction
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+
+
+class Votes(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    vote_type = models.IntegerField()
+
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+
+class Entity(models.Model):
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    rating = models.IntegerField(default=0)
+    author = models.ForeignKey(get_user_model(), null=True, on_delete=models.SET_NULL)
+
+    @transaction.atomic
+    def vote(self, user, vote_type):
+        content_type = ContentType.objects.get_for_model(self)
+        v = Votes.objects.filter(user=user, content_type__pk=content_type.id, object_id=self.id)
+        if v.exists():
+            self.rating -= v[0].vote_type
+            v.delete()
+        else:
+            Votes.objects.create(user=user, content_object=self, vote_type=vote_type)
+            self.rating += vote_type
+        self.save()
+
+    class Meta:
+        abstract = True
 
 
 class Tag(models.Model):
@@ -10,16 +43,13 @@ class Tag(models.Model):
         return self.title
 
 
-class Question(models.Model):
+class Question(Entity):
     title = models.CharField(max_length=120)
     slug = models.SlugField(max_length=140, unique=True)
-    text = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(get_user_model(), null=True, on_delete=models.SET_NULL)
     tags = models.ManyToManyField(Tag, blank=True)
-    has_answer =  models.BooleanField(default=False)
-    rating = models.IntegerField(default=0)
-    voters = models.ManyToManyField(get_user_model(), related_name='vote_questions', through='QuestionVote')
+    correct_answer = models.ForeignKey('Answer', null=True, blank=True, on_delete=models.SET_NULL,
+                                       related_name='correct_for_question')
 
     def __str__(self):
         return self.title
@@ -41,91 +71,9 @@ class Question(models.Model):
     def get_tags_str(self):
         return ','.join([t.title for t in self.tags.all()])
 
-    def cancel_vote(self, user):
-        qv_up = QuestionVote.objects.filter(user=user, question=self, vote_type='up')
-        qv_down = QuestionVote.objects.filter(user=user, question=self, vote_type='down')
-        cancel = False
-        if qv_up.exists():
-            # cancel vote up
-            qv_up.delete()
-            self.rating -= 1
-            cancel = True
-        elif qv_down.exists():
-            # cancel vote_down
-            qv_down.delete()
-            self.rating += 1
-            cancel = True
-        return cancel
 
-    def upvote(self, user):
-        if not self.cancel_vote(user):
-            self.question_votes.create(user=user, question=self, vote_type='up')
-            self.rating += 1
-        self.save()
-
-    def downvote(self, user):
-        if not self.cancel_vote(user):
-            self.question_votes.create(user=user, question=self, vote_type='down')
-            self.rating -= 1
-
-        self.save()
-
-
-class Answer(models.Model):
-    text = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+class Answer(Entity):
     question = models.ForeignKey(Question)
-    author = models.ForeignKey(get_user_model(), null=True, on_delete=models.SET_NULL)
-    is_correct = models.NullBooleanField()
-    rating = models.IntegerField(default=0)
-    voters = models.ManyToManyField(get_user_model(), related_name='vote_answers', through='AnswerVote')
-
-    def cancel_vote(self, user):
-        av_up = AnswerVote.objects.filter(user=user, answer=self, vote_type='up')
-        av_down = AnswerVote.objects.filter(user=user, answer=self, vote_type='down')
-        cancel = False
-        if av_up.exists():
-            # cancel vote up
-            av_up.delete()
-            self.rating -= 1
-            cancel = True
-        elif av_down.exists():
-            # cancel vote_down
-            av_down.delete()
-            self.rating += 1
-            cancel = True
-        return cancel
-
-    def upvote(self, user):
-        if not self.cancel_vote(user):
-            self.answer_votes.create(user=user, answer=self, vote_type='up')
-            self.rating += 1
-        self.save()
-
-    def downvote(self, user):
-        if not self.cancel_vote(user):
-            self.answer_votes.create(user=user, answer=self, vote_type='down')
-            self.rating -= 1
-
-        self.save()
-
-
-class QuestionVote(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='question_votes')
-    vote_type = models.CharField(max_length=4)
-
-    class Meta:
-        unique_together = ('user', 'question', 'vote_type')
-
-
-class AnswerVote(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='answer_votes')
-    vote_type = models.CharField(max_length=4)
-
-    class Meta:
-        unique_together = ('user', 'answer', 'vote_type')
 
 
 

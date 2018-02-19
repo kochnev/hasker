@@ -6,9 +6,9 @@
   <tbody>
     <tr>
         <td>
-            <a class="mx-2" href="{% url 'vote_question' question.slug 'up' %}">+</a>
+            <a class="mx-2" href="{% url 'vote_question' question.slug 1 %}">+</a>
             <span>{{question.rating}}</span>
-            <a class="mx-2"  href="{% url 'vote_question' question.slug 'down' %}">-</a></td>
+            <a class="mx-2"  href="{% url 'vote_question' question.slug -1 %}">-</a></td>
 
       <td>
           <div class="mb-2">{{question.text}}</div>
@@ -25,9 +25,9 @@
     {% for answer in answers %}
     <tr>
       <td>
-          <a class="mx-2" href="{% url 'vote_answer' question.slug answer.id 'up' %}">+</a>
+          <a class="mx-2" href="{% url 'vote_answer' question.slug answer.id 1 %}">+</a>
             <span>{{answer.rating}}</span>
-          <a class="mx-2"  href="{% url 'vote_answer' question.slug answer.id 'down' %}">-</a></td>
+          <a class="mx-2"  href="{% url 'vote_answer' question.slug answer.id -1 %}">-</a></td>
       </td>
       <td>
           <div class="mb-2">{{answer.text}}</div>
@@ -35,9 +35,11 @@
            <span> <img src="{{ MEDIA_URL }}{{answer.author.avatar}}" alt="avatar" width="30" height="30" alt="{{answer.author.username}}">
                 {{question.author.username}}</span>
           </div>
-              {% if answer.is_correct %}
-                 <div><strong>Ответ верный</strong></div>
-              {% elif not question.has_answer %}
+              {% if question.correct_answer %}
+                 {% if question.correct_answer == answer%}
+                     <div><strong>Ответ верный</strong></div>
+                 {% endif %}
+              {% else %}
                   <div class="mt-2"><a href="{% url 'mark_answer' question.slug answer.id%}">Отметить ответ как правильный</a></div>
               {% endif%}
 

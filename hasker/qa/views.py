@@ -1,23 +1,17 @@
-from django.shortcuts import render, reverse, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db import transaction
 from .forms import QuestionForm, AnswerForm
 from .models import Answer, Question, Tag
+from ..utils.paginator import paginate_list
 
 
 def index(request):
     sort = request.GET.get('sort','id')
     question_list = Question.objects.all().order_by('-' + sort)
-    paginator = Paginator(question_list, 20)
-
     page = request.GET.get('page')
-    try:
-        questions = paginator.page(page)
-    except PageNotAnInteger:
-        questions = paginator.page(1)
-    except EmptyPage:
-        questions = paginator.page(paginator.num_pages)
+    questions = paginate_list(question_list, page, 20)
 
     return render(request, 'qa/index.html', {'questions': questions})
 
@@ -30,20 +24,21 @@ def add_question(request):
         form = QuestionForm(request.POST)
         tags_str = request.POST.get('tags')
         if form.is_valid():
-            q = form.save(commit=False)
-            q.author = request.user
-            q.save()
-            if tags_str:
-                tags_arr = tags_str.split(',')
-                if len(tags_arr) <= 3:
-                    for tag in tags_arr:
-                        (t,created) = Tag.objects.get_or_create(title=tag)
-                        t.save()
-                        q.tags.add(t)
-                    q.save()
-                    return redirect('question_detail', q.slug)
-                else:
-                    tag_error = 'You are allowed to input up to 3 tags'
+            with transaction.atomic():
+                q = form.save(commit=False)
+                q.author = request.user
+                q.save()
+                if tags_str:
+                    tags_arr = tags_str.split(',')
+                    if len(tags_arr) <= 3:
+                        for tag in tags_arr:
+                            (t,created) = Tag.objects.get_or_create(title=tag)
+                            t.save()
+                            q.tags.add(t)
+                        q.save()
+                        return redirect('question_detail', q.slug)
+                    else:
+                        tag_error = 'You are allowed to input up to 3 tags'
     else:
         form = QuestionForm()
 
@@ -54,14 +49,8 @@ def add_question(request):
 def question_detail(request, slug):
     q = get_object_or_404(Question, slug=slug)
     answers_list = Answer.objects.filter(question=q).order_by('-rating','-created_at')
-    paginator = Paginator(answers_list, 30)
     page = request.GET.get('page')
-    try:
-        answers = paginator.page(page)
-    except PageNotAnInteger:
-        answers = paginator.page(1)
-    except EmptyPage:
-        answers = paginator.page(paginator.num_pages)
+    answers = paginate_list(answers_list, page, 20)
 
     form = AnswerForm()
     if request.method == 'POST':
@@ -90,37 +79,23 @@ def question_detail(request, slug):
 @login_required
 def mark_answer(request, slug, pk):
     q = get_object_or_404(Question, slug=slug)
-    Answer.objects.filter(question=q).update(is_correct=None)
     a = get_object_or_404(Answer, pk=pk)
-    a.is_correct = True
-    a.save()
-    q.has_answer = True
+    q.correct_answer = a
     q.save()
     return redirect('question_detail', slug)
 
 
 @login_required
-def vote_question(request, slug, type_vote):
+def vote_question(request, slug, vote_type):
     q = get_object_or_404(Question, slug=slug)
-    user = request.user
-    if type_vote == 'up':
-        q.upvote(user)
-    elif type_vote == 'down':
-        q.downvote(user)
-    elif type_vote == 'cancel':
-        q.cancel_vote(user)
+    q.vote(request.user, int(vote_type))
     return redirect('question_detail', slug)
 
+
 @login_required
-def vote_answer(request, slug, pk, type_vote):
+def vote_answer(request, slug, pk, vote_type):
     a = get_object_or_404(Answer, pk=pk)
-    user = request.user
-    if type_vote == 'up':
-        a.upvote(user)
-    elif type_vote == 'down':
-        a.downvote(user)
-    elif type_vote == 'cancel':
-        a.cancel_vote(user)
+    a.vote(request.user, int(vote_type))
     return redirect('question_detail', slug)
 
 
