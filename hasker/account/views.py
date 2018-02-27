@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.db import transaction
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import UserForm, UserSettingsForm
@@ -9,8 +10,9 @@ def signup(request):
     if request.method == 'POST':
         user_form = UserForm(request.POST, request.FILES)
         if user_form.is_valid():
-            user = user_form.save()
-            login(request, user)
+            with transaction.atomic():
+                user = user_form.save()
+                login(request, user)
             return redirect('settings')
     else:
         user_form = UserForm()
@@ -40,7 +42,6 @@ def user_login(request):
 @login_required
 def settings(request):
     user = request.user
-
     if request.method == 'POST':
         user_form = UserSettingsForm(request.POST, request.FILES, instance=user)
 

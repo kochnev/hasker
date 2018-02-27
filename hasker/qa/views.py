@@ -52,14 +52,14 @@ def question_detail(request, slug):
     page = request.GET.get('page')
     answers = paginate_list(answers_list, page, 20)
 
-    form = AnswerForm()
     if request.method == 'POST':
         form = AnswerForm(request.POST)
         if form.is_valid():
-            a = form.save(commit=False)
-            a.author = request.user
-            a.question = q
-            a.save()
+            with transaction.atomic():
+                a = form.save(commit=False)
+                a.author = request.user
+                a.question = q
+                a.save()
             send_mail(
                 'new answer was added',
                 'The answer is:\n' +
