@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
 from django.db import transaction
 from .forms import QuestionForm, AnswerForm
-from .models import Answer, Question, Tag
+from .models import Answer, Question
 from ..utils.paginator import paginate_list
 
 
@@ -22,23 +21,15 @@ def add_question(request):
     tag_error = ''
     if request.method == 'POST':
         form = QuestionForm(request.POST)
-        tags_str = request.POST.get('tags')
+        tags_str = request.POST.get('tags','')
         if form.is_valid():
             with transaction.atomic():
                 q = form.save(commit=False)
                 q.author = request.user
                 q.save()
-                if tags_str:
-                    tags_arr = tags_str.split(',')
-                    if len(tags_arr) <= 3:
-                        for tag in tags_arr:
-                            (t,created) = Tag.objects.get_or_create(title=tag)
-                            t.save()
-                            q.tags.add(t)
-                        q.save()
-                        return redirect('question_detail', q.slug)
-                    else:
-                        tag_error = 'You are allowed to input up to 3 tags'
+                tag_error = q.set_tags(tags_str=tags_str)
+                if not tag_error:
+                    return redirect('question_detail', q.slug)
     else:
         form = QuestionForm()
 
@@ -60,15 +51,7 @@ def question_detail(request, slug):
                 a.author = request.user
                 a.question = q
                 a.save()
-            send_mail(
-                'new answer was added',
-                'The answer is:\n' +
-                 a.text + '\n\n' +
-                'Here is the link for your question ' + request.build_absolute_uri(),
-                'from@example.com',
-                ['to@example.com'],
-                fail_silently=False,
-            )
+                q.notify_answer_added(answer=a, link=request.build_absolute_uri())
             return redirect('question_detail', q.slug)
     else:
         form = AnswerForm()
