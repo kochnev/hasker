@@ -10,17 +10,16 @@ prod:
 	yum -y install python36u-pip
        
     #django
-	pip3.6 install django==1.11
+    pip3.6 install django==1.11
 	pip3.6 install django-debug-toolbar==1.9.1
         
-	#psycopg2
-	yum groupinstall "Development Tools" -y
+    #psycopg2
+    yum groupinstall 'Development Tools' -y
     yum install python3-devel -y
     yum install postgresql-libs -y
     yum install postgresql-devel -y
-
-	pip3.6 install psycopg2
-	pip3.6 install Pillow
+    pip3.6 install psycopg2
+    pip3.6 install Pillow
 
 	#postgresql
 	yum install -y postgresql-server postgresql-contrib
