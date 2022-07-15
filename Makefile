@@ -38,9 +38,9 @@ prod:
 
 	#nginx
 	yum -y install nginx
-	cp /hasker/nginx/nginx_hasker.conf /etc/nginx/conf.d/
+    cp /hasker/nginx/nginx_hasker.conf /etc/nginx/conf.d/
 	nginx
 		
     #uwsgi
-	pip3.6 install uwsgi
-	uwsgi --ini /hasker/uwsgi/uwsgi.ini
+    pip3.6 install uwsgi
+    uwsgi --ini /hasker/uwsgi/uwsgi.ini
