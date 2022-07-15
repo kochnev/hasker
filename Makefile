@@ -1,14 +1,15 @@
 prod:
 	#upgrade yum
 	yum -y update
-	yum -y install https://centos7.iuscommunity.org/ius-release.rpm
+	yum -y https://repo.ius.io/ius-release-el7.rpm
+	yum -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 	yum -y install sudo
 
 	#python3.6 and pip3.6
 	yum -y install python36u
 	yum -y install python36u-pip
        
-        #django
+    #django
 	pip3.6 install django==1.11
 	pip3.6 install django-debug-toolbar==1.9.1
         

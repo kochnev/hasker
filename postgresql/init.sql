@@ -5,5 +5,4 @@ alter user :db_user set client_encoding to 'utf8';
 alter user :db_user set default_transaction_isolation to 'read committed';
 alter user :db_user set timezone to 'UTC';
 
-create database :db_name owner :db_user
-
+create database :db_name owner :db_user ;
