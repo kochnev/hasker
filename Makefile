@@ -8,6 +8,8 @@ prod:
 	#python3.6 and pip3.6
 	yum -y install python36u
 	yum -y install python36u-pip
+    pip3.6 install --upgrade pip
+
        
     #django
     pip3.6 install django==1.11
@@ -39,8 +41,6 @@ prod:
 	cp /hasker/nginx/nginx_hasker.conf /etc/nginx/conf.d/
 	nginx
 		
-        #uwsgi
-	yum -y install python36u-devel
-	yum -y install gcc
+    #uwsgi
 	pip3.6 install uwsgi
 	uwsgi --ini /hasker/uwsgi/uwsgi.ini
