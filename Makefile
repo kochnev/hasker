@@ -10,10 +10,10 @@ prod:
 	yum -y install python36u-pip
 	pip3.6 install --upgrade pip
 
-       
+
 	#django
-	pip3.6 install django==1.11
-	pip3.6 install django-debug-toolbar==1.9.1
+	pip3.6 install django==3.2.14
+	pip3.6 install django-debug-toolbar==3.2.4
 
 	#psycopg2
 	yum groupinstall 'Development Tools' -y
