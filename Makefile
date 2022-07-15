@@ -1,8 +1,8 @@
 prod:
 	#upgrade yum
 	yum -y update
-	yum -y https://repo.ius.io/ius-release-el7.rpm
-	yum -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+	yum -y install https://repo.ius.io/ius-release-el7.rpm
+	yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 	yum -y install sudo
 
 	#python3.6 and pip3.6
