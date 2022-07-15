@@ -1,4 +1,4 @@
-Hsker: Poor Man's Stackoverflow
+ Hsker: Poor Man's Stackoverflow
 =====================
 
 It is a simple Q&A web application written on Django 1.11.
@@ -23,7 +23,7 @@ It is a simple Q&A web application written on Django 1.11.
 
 * `docker build -t hasker .`
 * `docker run --rm -it -p 8000:80 hasker`
-* `git clone https://github/kochnev/hasker.git` 
+* `git clone https://github.com/kochnev/hasker.git` 
 * `cd hasker`
 * `make prod`
 
