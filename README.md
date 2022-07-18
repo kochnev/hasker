@@ -22,7 +22,7 @@ It is a simple Q&A web application written on Django 1.11.
 ## Installing
 
 * `docker build -t hasker .`
-* `docker run --rm -it -p 8000:80 hasker`
+* `docker run --rm -it -p 8000:80 hasker -v /Users/alex/otus/haser:/hasker`
 * `git clone https://github.com/kochnev/hasker.git` 
 * `cd hasker`
 * `make prod`
