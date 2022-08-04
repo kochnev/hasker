@@ -10,11 +10,12 @@ prod:
 	pip3.6 install django-debug-toolbar==3.2.4
 
 	#psycopg2Dd
-	yum groupinstall 'Development Tool'
-	yum install python3-devel -y
-	yum install postgresql-libs -y
-	yum install postgresql-devel -y
-	pip3.6 install psycopg2
+	#yum groupinstall 'Development Tool'
+	#yum install python3-devel -y
+	#yum install postgresql-libs -y
+	#yum install postgresql-devel -y
+	#pip3.6 install psycopg2
+	pip3.6 install psycopg2-binary
 	pip3.6 install Pillow
 
 	#postgresql
