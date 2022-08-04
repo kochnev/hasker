@@ -85,9 +85,12 @@ class Question(Entity):
             fail_silently=False,
         )
 
+    class Meta:
+        app_label = 'qa'
+
 
 class Answer(Entity):
-    question = models.ForeignKey(Question)
+    question = models.ForeignKey(Question, on_delete=models.SET_NULL)
 
 
 class Tag(models.Model):

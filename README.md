@@ -9,8 +9,8 @@ It is a simple Q&A web application written on Django 1.11.
 * Python 3.6
 * Nginx 
 * uWSGI 
-* Django 1.11
-* django-debug-toolbar 1.9.1
+* Django 4.0.6
+* django-debug-toolbar 3.2.4
 * PostgreSQL 
 * Twitter Bootstrap
 * Javascript, jQuery
@@ -22,7 +22,7 @@ It is a simple Q&A web application written on Django 1.11.
 ## Installing
 
 * `docker build -t hasker .`
-* `docker run --rm -it -p 8000:80 hasker -v /Users/alex/otus/haser:/hasker`
+* `docker run --rm -it -p 8000:80 hasker -v /Users/alex/otus/hasker:/hasker`
 * `git clone https://github.com/kochnev/hasker.git` 
 * `cd hasker`
 * `make prod`

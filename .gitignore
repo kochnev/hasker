@@ -108,3 +108,6 @@ ENV/
 
 #media
 /hasker/media
+
+#vscode
+.vscode/git

@@ -38,15 +38,16 @@ AUTH_USER_MODEL = 'account.User'
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'hasker.qa',
-    'hasker.account',
-    'hasker.search',
+    'hasker.qa.apps.AskConfig',
+    'hasker.account.apps.AccountConfig',
+    'hasker.search.apps.SearchConfig',
     'hasker.utils',
 ]
 
